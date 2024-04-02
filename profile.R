@@ -3,19 +3,22 @@ x = matrix(runif(1e5*500), ncol = 500)
 
 Rprof()
 system.time({
-ntrials <- 100000
-counter <- 0
-
-for (trial in 1:ntrials) {
-  AMissed <- sum(sample(3:12,1,TRUE) > 6)
-  BMissed <- sum(sample(3:12,1,TRUE,seq(2,1,length=10)) > 6)
-  CMissed <- sum(sample(2:8,1,TRUE) > 6)
-  DMissed <- sum(sample(2:8,1,TRUE,seq(1,3,length=7)) > 6)
+  ntrials <- 100000
+  counter <- 0
   
-  if ((AMissed+BMissed+CMissed+DMissed) >= 2) (counter <- counter + 1)
-}
-
-counter/ntrials
+  A <- sample(3:12, ntrials, replace = TRUE)
+  B <- sample(3:12, ntrials, replace = TRUE, prob = seq(2, 1, length = 10))
+  C <- sample(2:8, ntrials, replace = TRUE)
+  D <- sample(2:8, ntrials, replace = TRUE, prob = seq(1, 3, length = 7))
+  
+  AMissed <- A > 6
+  BMissed <- B > 6
+  CMissed <- C > 6
+  DMissed <- D > 6
+  
+  counter <- sum(AMissed + BMissed + CMissed + DMissed >= 2)
+  
+  counter / ntrials
 })
 Rprof(NULL)
 summaryRprof()
